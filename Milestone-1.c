@@ -1,17 +1,26 @@
-#pragma config(Sensor, S1,     sonarSensor,         sensorSONAR)
+#pragma config(Sensor, S1, sonarSensor, sensorSONAR)
+/* Date: 18/10/2017
+   Editors: George Dialektakis - Theodoros Apostolopoulos
+   Project: Autonomous Car
+   Phase: Milestone 1
+   Description: A car that is designed to drive itself forwards on a straight line until it meets an obstacle.Then it stops, 
+   it moves back a little, makes a 180 degrees turn and continues straight for 1.5 meters or until it meets another obstacle.
 
-/* motorA --> movement (rear wheels)
-	 motorB --> sonarSensor rotation
-	 motorC --> turning (front wheels)
+*/
+
+/*   motorA --> movement (rear wheels)
+     motorB --> sonarSensor rotation
+     motorC --> turning (front wheels)
+     S1--> Ultrasonic Sensor
 
 */
 
 task main()
 {
 
-	float R = 2.7;  //rear wheel radius
-	int x = 30;     //distance to cover backwards when meeting an obstacle
-  int distance = 30;   // Create variable 'distance' and initialize it to 30(cm).
+   float R = 2.7;  //rear wheel radius
+   int x = 30;     //distance to cover backwards when meeting an obstacle
+   int distance = 30;   // Create variable 'distance' and initialize it to 30(cm).
 
    motor[motorA] = 80;
    while(SensorValue[S1] > distance)   // While the Sonar Sensor readings are less than the specified, 'distance':
