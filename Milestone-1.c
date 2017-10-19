@@ -1,11 +1,17 @@
 #pragma config(Sensor, S1, sonarSensor, sensorSONAR) //This line of code has to be before any comments and at line 1 of any code!
 /* Date: 18/10/2017
-   Editors: George Dialektakis - Theodoros Apostolopoulos
+   Writers: George Dialektakis - Theodoros Apostolopoulos
    Project: Autonomous Car
    Phase: Milestone 1
+   Platform: RobotC
+   Technology: NXT Lego Mindstorms
    Description: A car that is designed to drive itself forwards on a straight line until it meets an obstacle.Then it stops, 
    it moves back a little, makes a 180 degrees turn and continues straight for 1.5 meters or until it meets another obstacle.
+*/
 
+/* As it was our 1st Milestone of our final project, we decided to keep the code simple without the use of any functions as
+ we spent most of the time familiarizing with the NXT Lego Mindstorms Technology and the RobotC platform. In the next Milestone 
+ we will organise our code much better!
 */
 
 /*   motorA --> movement (rear wheels)
