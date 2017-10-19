@@ -20,10 +20,11 @@ task main()
 
 float R = 2.7;  //wheel radius
 int x = 30;     //distance to cover backwards when meeting an obstacle
-int distance = 30;   // Distance less than the car stops.
+int distance = 30;   // The car stops if it abstains less than 30cm from an obstacle.
 	
-motor[motorA] = 80;
-while(SensorValue[S1] > distance)   // While the Sonar Sensor readings are less than the specified, 'distance':
+motor[motorA] = 80;  //speed of motor
+while(SensorValue[S1] > distance) 
+	// While the Sonar Sensor readings are greater than the specified, 'distance', continue moving forwards.
 {
       writeDebugStreamLine("Sensor value is: %d", SensorValue[S1]);  //printing the readings of the ultraSonic sensor
       wait1Msec(50);
@@ -32,8 +33,8 @@ while(SensorValue[S1] > distance)   // While the Sonar Sensor readings are less 
 motor[motorA] = 0;    //when it meets an obstacle, it stops moving
 wait1Msec(500);
 
-nMotorEncoder[motorA] = 0;           //then it moves backwards
-nMotorEncoderTarget[motorA] = (x*360)/(2*3.14*R);  //for the specified distance 'x'
+nMotorEncoder[motorA] = 0;           //then it moves backwards. Whenever a revolution is completed, this counter increases by 1.
+nMotorEncoderTarget[motorA] = (x*360)/(2*3.14*R);  //for the specified distance 'x'. This is a target in degrees to rotate.
 motor[motorA] = -80;
 
 while(nMotorRunState[motorA] != runStateIdle)
