@@ -25,7 +25,7 @@ task main()
 {
 
 float R = 2.7;  //wheel radius
-int x = 30;     //distance to cover backwards when meeting an obstacle
+int x = 40;     //distance to cover backwards when meeting an obstacle
 int distance = 30;   // The car stops if it abstains less than 30cm from an obstacle.
 	
 motor[motorA] = 80;  //speed of motor
