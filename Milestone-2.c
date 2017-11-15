@@ -8,14 +8,14 @@
    Platform: RobotC
    Technology: NXT Lego Mindstorms
    Description: An Autonomous Car designed to avoid any obstacle on its way by checking if it's possible to overtake it from the right or the left side. If it doesn't find a path to ovecome the obstacle,
-                   it chooses to go back and continue its movement in free space.
+                            it chooses to go back and continue its movement in free space.
 */
 
 
 /*   motorA --> movement (rear wheels)
-     motorB --> sonarSensor rotation
-     motorC --> steering (front wheels)
-     S1--> Ultrasonic Sensor
+      motorB --> Ultrasonic sensor rotation
+      motorC --> steering (front wheels)
+      S1--> Ultrasonic Sensor
 */
 
 
@@ -24,19 +24,19 @@ float R = 2.7;   //wheel radius
 int obst_distance = 40;  //distance away from an obstacle to stop at
 
 //functions
-int move(int distance, bool direction);   //function for moving forwards or backwards for the given distance based on the direction argument
-int check();   //function for checking the left and right side of the car to find a path in order to overtake an obstacle
-void rotateSonar(int degrees, bool direction);   //rotates the gear that the Ultrasonic Sensor is placed on, for the given degrees and in the given direction
-void rotateWheels(int degrees, bool direction);  //rotates the front wheels for steering
-void guide(int degrees);  //make the car look at the direction of the argument degrees
+int move(int distance, bool direction);
+int check();
+void rotateSonar(int degrees, bool direction);
+void rotateWheels(int degrees, bool direction);
+void guide(int degrees);
 
 
 
 //main function
 task main(){
 
-int result  = 0;  //Here we store the returned value of the function check()
-int obstmet = 0;  //Here we store the returned value of the function move()
+ int result  = 0;  //Here we store the returned value of the function check()
+ int obstmet = 0;  //Here we store the returned value of the function move()
 
    while(true){   //runs forever
 
@@ -46,16 +46,16 @@ int obstmet = 0;  //Here we store the returned value of the function move()
        result = check();  //check each side for available space to overtake the obstacle
 
        if(result == 1){  //overtake obstacle from the right
-         guide(90);
+         guide(45);
          rotateSonar(45,true);   //calibrate Sensor to look forwards
          move(40,true);
-         guide(-90);
+         guide(-45);
          move(40,true);
        }else if(result == 2){   //overtake obstacle from the left
-         guide(-90);
+         guide(-45);
          rotateSonar(45,false);     //calibrate Sensor to look forwards
          move(40,true);
-         guide(90);
+         guide(45);
          move(40,true);
        }else{
          move(20,false);  //go back
@@ -69,10 +69,14 @@ int obstmet = 0;  //Here we store the returned value of the function move()
 
 
 
-int move(int distance, bool direction){  //direction--> true = forwards and false = backwards
-  int result = 0;  //return 0 if we traversed the given distance or -1 if an obstacle was met
-  nMotorEncoder[motorA] = 0;  //reset counter
-  nMotorEncoderTarget[motorA] = (distance*360)/(2*PI*R);  //for the specified 'distance'. This is a target in degrees to rotate.
+
+/*function for moving forwards or backwards
+ for the given distance based on the direction argument*/
+int move(int distance, bool direction){   //direction--> true = forwards and false = backwards
+
+  int result = 0;   //return 0 if we traversed the given distance or -1 if an obstacle was met
+  nMotorEncoder[motorA] = 0;   //reset counter
+  nMotorEncoderTarget[motorA] = (distance*360)/(2*PI*R);   //for the specified 'distance'. This is a target in degrees to rotate.
 
   if(direction){
     motor[motorA] =  50;  //forwards
@@ -87,17 +91,18 @@ int move(int distance, bool direction){  //direction--> true = forwards and fals
 
   if(SensorValue[S1] <= obst_distance){
     result = -1;   //car stoppped because it met an obstacle
-    writeDebugStreamLine("Sensor final value: %d", SensorValue[S1]);
   }
 
   if(!direction){
     rotateSonar(180,false);  //calibrate sensor to starting point (0 degrees)
   }
-  motor[motorA] = 0;
+  motor[motorA] = 0;   //if we met an obstacle stop moving any further
   return result;
 }
 
 
+/*Function rotating the gear that the Ultrasonic Sensor is placed on,
+for the given degrees and in the given direction*/
 void rotateSonar(int degrees, bool direction){  //direction true = left rotation and false = right rotation
 
   nMotorEncoder[motorB] = 0;   //reset counter
@@ -115,6 +120,7 @@ void rotateSonar(int degrees, bool direction){  //direction true = left rotation
 }
 
 
+//rotates the front wheels for steering
 void rotateWheels(int degrees, bool direction){  //direction true = right rotation and false = left rotation
 
   nMotorEncoder[motorC] = 0;  //reset counter
@@ -133,16 +139,18 @@ void rotateWheels(int degrees, bool direction){  //direction true = right rotati
 }
 
 
+ /* function for checking the left and right side of the car
+  to find a path in order to overtake an obstacle */
 int check(){
 
  rotateSonar(45,false);  //checking on the right side
  writeDebugStreamLine("Value right is: %d", SensorValue[S1]);
- if(SensorValue[S1] > 150){            //if the sensor doesn't <see> an obstacle within 1.5 meters on its right
+ if(SensorValue[S1] > 100){            //if the sensor doesn't <see> an obstacle within 1 meters on its right
    return 1;
  }else{
    rotateSonar(90,true);  //checking on the left side
    writeDebugStreamLine("Value left is: %d", SensorValue[S1]);
-   if(SensorValue[S1] > 150){         //if the sensor doesn't <see> an obstacle within 1.5 meters on its left
+   if(SensorValue[S1] > 100){         //if the sensor doesn't <see> an obstacle within 1 meters on its left
      return 2;
    }else{                   //sensor didn't find any available path to overtake the obstacle
      rotateSonar(45,false);  //calibrate to the starting point
@@ -154,7 +162,9 @@ int check(){
 }
 
 
+//Function which makes the car look at the direction of the argument degrees
 void guide(int degrees){
+
   int position = 0;  //multiples of 45 degrees
   bool direction = true;   //true for turning right and false for left
 
@@ -182,6 +192,6 @@ void guide(int degrees){
   }
 
   rotateWheels(70,direction);
-  move(7*position,true);     //7cm distance with 70 degrees angle for the front wheels is enough to make the car look at 45 degrees
-  rotateWheels(70,!direction);  //calibrate wheels to 0 degrees
+  move(14*position,true);      //14 cm distance with 70 degrees angle for the front wheels is enough to make the car look at 45 degrees
+  rotateWheels(70,!direction);   //calibrate wheels to 0 degrees
 }
