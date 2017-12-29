@@ -41,8 +41,7 @@ int  check();
 
 //main function
 task main(){
-
-
+   
   if(find_parking(true) == 1){
     // we have found a suitable parking space on the right side
     park(true); //let's park
